@@ -88,7 +88,7 @@ function tabs(ts) {
   const tabSlot = div(tags[currentTab]);
 
   return div(
-    tabSwitcher(Object.keys(ts), (index)=>{
+    tabSwitcher(Object.keys(ts), (index) => {
       tabSlot.removeChild(tags[currentTab]);
       tabSlot.appendChild(tags[index]);
       currentTab = index;
@@ -97,20 +97,62 @@ function tabs(ts) {
   );
 }
 
+function router(routes) {
+  let result = div();
+  result.syncHash = function () {
+    let hashLocation = document.location.hash.split("#")[1];
+
+    if (!hashLocation) {
+      hashLocation = "/";
+    }
+
+    if (!(hashLocation in routes)) {
+      const route404 = "/404";
+      console.assert("/404" in routes);
+      hashLocation = route404;
+    }
+    while (this.firstChild) {
+      this.removeChild(this.lastChild);
+    }
+    this.appendChild(routes[hashLocation]);
+  };
+  return result;
+}
+
 window.onload = () => {
   console.log("SAFONA ARENA");
 
   // Safona(BlogPost);
-  Safona(
-    tabs({
-      Component: Component(),
-      BlogPost: BlogPost(),
-      Dislay: Dislay(),
-      foo: text("helo")
-    })
-  );
-  Safona(text("hello"))
+  // Safona(
+  //   tabs({
+  //     Component: Component(),
+  //     BlogPost: BlogPost(),
+  //     Dislay: Dislay(),
+  //     foo: text("helo")
+  //   })
+  // );
+  Safona(text("hello"));
+  const app = router({
+    "/": div(
+      tabs({
+        Component: Component(),
+        BlogPost: BlogPost(),
+        Dislay: Dislay(),
+        foo: text("helo"),
+      }),
+      a(text("secret base")).setAny("href", "#/secret")
+    ),
+    "/secret": div(text("This is a secret page what are u doing here bro?")),
+    "/404": div(text("ERROR PAGE BRO")),
+  });
 
+  app.syncHash();
+
+  window.addEventListener("hashchange", () => {
+    app.syncHash();
+  });
+
+  root.appendChild(app);
   //   console.log(div(div().setId("child").setClass("animal")));
   //   //   root.appendChild();
   //   //   Safona(div().setClass("c1"))
