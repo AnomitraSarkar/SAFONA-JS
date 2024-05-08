@@ -1,5 +1,10 @@
 console.clear();
 
+engine = {
+  connector: root,
+  renderer: Safona,
+};
+
 function creator(name, ...children) {
   let elem = document.createElement(name);
 
@@ -22,6 +27,11 @@ function creator(name, ...children) {
   };
 
   for (const child of children) {
+    if (typeof child == "string") {
+      throw new Error(
+        "Attempted to Pass String Object, Use Text Wrappers Instead "
+      );
+    }
     elem.appendChild(child);
   }
   return elem;
@@ -61,7 +71,11 @@ function a(...children) {
   return creator("a", ...children);
 }
 
-function Safona(appender, init = root) {
+function canvas(...children) {
+  return creator("canvas", ...children);
+}
+
+function Safona(appender, init = engine.connector) {
   init.appendChild(appender);
   console.log(init);
 }
@@ -119,19 +133,27 @@ function router(routes) {
   return result;
 }
 
+function webglPreview() {
+  const previewCanvas = canvas().setAny("width", "112").setAny("height", "112");
+
+  const previewContext = previewCanvas.getContext("2d");
+  previewContext.fillStyle = "red";
+  previewContext.fillRect(10, 10, 150, 80);
+
+  return div(h1(text("simple webgl component")), previewCanvas);
+}
+
+function initRouting(hashContext) {
+  hashContext.syncHash();
+  window.addEventListener("hashchange", () => {
+    hashContext.syncHash();
+  });
+  Safona(hashContext);
+}
+
 window.onload = () => {
   console.log("SAFONA ARENA");
-
-  // Safona(BlogPost);
-  // Safona(
-  //   tabs({
-  //     Component: Component(),
-  //     BlogPost: BlogPost(),
-  //     Dislay: Dislay(),
-  //     foo: text("helo")
-  //   })
-  // );
-  Safona(text("hello"));
+  Safona(text("Saffona Development"));
   const app = router({
     "/": div(
       tabs({
@@ -142,18 +164,13 @@ window.onload = () => {
       }),
       a(text("secret base")).setAny("href", "#/secret")
     ),
+    "/webgl": webglPreview(),
     "/secret": div(text("This is a secret page what are u doing here bro?")),
-    "/404": div(text("ERROR PAGE BRO")),
+    "/404": div(
+      text("ERROR PAGE BRO"),
+      a(text("go back to home")).setAny("href", "#")
+    ),
   });
 
-  app.syncHash();
-
-  window.addEventListener("hashchange", () => {
-    app.syncHash();
-  });
-
-  root.appendChild(app);
-  //   console.log(div(div().setId("child").setClass("animal")));
-  //   //   root.appendChild();
-  //   //   Safona(div().setClass("c1"))
+  initRouting(app);
 };
