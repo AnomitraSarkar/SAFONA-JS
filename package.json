@@ -1,0 +1,25 @@
+{
+  "name": "safona-js",
+  "version": "1.0.0",
+  "description": "A Lightweight, Superfast and Minimalistic Javascript framwork with in-built DOM manipulation, State Management, Routing, Navigation for creating easy transfer of vanilla users to framework base development.",
+  "main": "safona.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnomitraSarkar/SAFONA-JS.git"
+  },
+  "keywords": [
+    "framework",
+    "lightweight",
+    "fast",
+    "js"
+  ],
+  "author": "Anomitra Sarkar",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AnomitraSarkar/SAFONA-JS/issues"
+  },
+  "homepage": "https://github.com/AnomitraSarkar/SAFONA-JS#readme"
+}
